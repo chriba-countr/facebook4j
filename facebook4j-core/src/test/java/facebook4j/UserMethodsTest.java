@@ -85,7 +85,7 @@ public class UserMethodsTest extends MockFacebookTestBase {
         @Test
         public void reading() throws Exception {
             facebook.setMockJSON("mock_json/user/me_fields.json");
-            User me = facebook.getMe(new Reading().fields("gender").fields("email"));
+            User me = facebook.getMe(new Reading().fields("gender").fields("email").fields("age_range"));
 
             assertThat(me.getGender(), is("male"));
             assertThat(me.getEmail(), is("roundrop@gmail.com"));
@@ -94,6 +94,19 @@ public class UserMethodsTest extends MockFacebookTestBase {
             assertThat(me.getBirthday(), is(nullValue()));
             assertThat(me.getEducation().size(), is(0));
             assertThat(me.getHometown(), is(nullValue()));
+
+            assertThat(me.getAgeRange().getMin(), is(17));
+            assertThat(me.getAgeRange().getMax(), is(20));
+            
+        }
+
+        @Test
+        public void ageRangeMin() throws Exception {
+            facebook.setMockJSON("mock_json/user/age_range_min.json");
+            User me = facebook.getMe(new Reading().fields("age_range"));
+
+            assertThat(me.getAgeRange().getMin(), is(21));
+            assertThat(me.getAgeRange().getMax(), is(nullValue()));
         }
     }
 
@@ -159,6 +172,15 @@ public class UserMethodsTest extends MockFacebookTestBase {
             assertThat(user.getTimezone(), is(nullValue()));
             assertThat(user.isInstalled(), is(nullValue()));
         }
+
+        @Test
+        public void hometown_string() throws Exception {
+            facebook.setMockJSON("mock_json/user/hometown_string.json");
+            User user = facebook.getUser("CFKArgentina");
+
+            assertThat(user.getHometown().getId(), is(nullValue()));
+            assertThat(user.getHometown().getName(), is("La Plata"));
+        }
     }
 
     public static class getPictureURL extends MockFacebookTestBase {
@@ -178,6 +200,20 @@ public class UserMethodsTest extends MockFacebookTestBase {
             assertThat(url.toString(), is("https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/1111_22222_333333_q.jpg"));
             url = facebook.getPictureURL("22222", PictureSize.large);
             assertThat(url.toString(), is("https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/1111_22222_333333_q.jpg"));
+        }
+
+        @Test
+        public void me_width_height() throws Exception {
+            facebook.setMockJSON("mock_json/user/me_picture_width_height.json");
+            URL url = facebook.getPictureURL(720, 540);
+            assertThat(facebook.getEndpointURL(), hasParameter("width", "720"));
+            assertThat(facebook.getEndpointURL(), hasParameter("height", "540"));
+            assertThat(url.toString(), is("https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/1111_22222_333333_a.jpg"));
+            url = facebook.getPictureURL("100001568838021", 720, 540);
+            assertThat(facebook.getEndpointURL(), is(pathOf("/100001568838021/picture")));
+            assertThat(facebook.getEndpointURL(), hasParameter("width", "720"));
+            assertThat(facebook.getEndpointURL(), hasParameter("height", "540"));
+            assertThat(url.toString(), is("https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/1111_22222_333333_a.jpg"));
         }
 
         @Test

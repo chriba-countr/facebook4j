@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.facebook4j</groupId>
   <artifactId>facebook4j-core</artifactId>
-  <version>2.1.1-SNAPSHOT</version>
+  <version>2.2.3-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>facebook4j-core</name>
   <description>A Java library for the Facebook Graph API</description>
@@ -51,7 +51,7 @@
       <id>sonatype-nexus-staging</id>
       <name>Nexus Release Repository</name>
       <uniqueVersion>false</uniqueVersion>
-      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
     <snapshotRepository>
       <id>sonatype-nexus-snapshots</id>
@@ -244,6 +244,24 @@
         <version>2.15</version>
         <configuration>
           <excludedGroups>facebook4j.junit.category.RealAPITests</excludedGroups>
+        </configuration>
+      </plugin>
+
+      <!-- for Coveralls -->
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <version>2.2.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <format>xml</format>
+          <maxmem>256m</maxmem>
+          <aggregate>true</aggregate>
+          <check />
         </configuration>
       </plugin>
     </plugins>
